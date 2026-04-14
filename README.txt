@@ -1,1 +1,1 @@
-Полный Apollo project. Добавлена реальная опция пролонгации ещё на 5 лет без новых взносов и без комиссий. Проект продолжает читать данные из data/sp500.xlsx. Для обновления истории замените этот файл и задеплойте заново.
+Apollo project with Excel autoload. Added optional 5-year extension without new contributions and without fees. To update data, replace data/sp500.xlsx and redeploy.

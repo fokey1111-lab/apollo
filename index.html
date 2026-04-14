@@ -22,8 +22,6 @@ h1{margin:0;font-size:44px;line-height:1.05}
 .field{margin-bottom:18px}
 label{display:block;font-size:14px;color:#e2e8f0;margin-bottom:8px}
 input{width:100%;padding:14px;border-radius:12px;border:1px solid #334155;background:#020617;color:#fff;font-size:16px;outline:none}
-.checkbox-label{display:flex;align-items:flex-start;gap:10px}
-.checkbox-label input{width:auto;margin-top:3px}
 .hint{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.5}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}
 .stat,.info{padding:20px}
@@ -55,7 +53,7 @@ canvas{width:100%;height:100%;display:block}
       <h1>Калькулятор фонда Аполло</h1>
       <div class="subtitle">
         Калькулятор показывает, сколько инвестор мог заработать на 15-летнем отрезке при инвестировании в индекс S&amp;P 500 через фонд Аполло с учетом регулярных комиссий.
-        Опционально можно включить пролонгацию ещё на 5 лет: без новых пополнений и без комиссий. История S&amp;P 500 подгружается из Excel.
+        Используются исторические данные S&amp;P 500 из Excel. В расчет заложены: комиссия 6.6% от общего объема премий за 15 лет, которая взимается ежегодно в первые 3 года равными долями, 5% с каждой премии весь срок, и ежегодная комиссия $30 в конце каждого года.
       </div>
     </div>
     <div class="box">
@@ -75,31 +73,26 @@ canvas{width:100%;height:100%;display:block}
   <div class="grid">
     <div class="box">
       <div class="panel-title">Параметры калькулятора</div>
-
       <div class="field">
         <label>Годовая премия</label>
         <input type="number" id="annualPremium" value="5000" min="1500" max="10000" step="100"/>
         <div class="hint" id="premiumHint">Минимум $1,500 и максимум $10,000</div>
       </div>
-
       <div class="field">
-        <label>Дата старта периода</label>
+        <label>Дата старта 15-летнего периода</label>
         <input type="date" id="startDate"/>
       </div>
-
       <div class="field">
         <label>Безрисковая ставка для Sharpe, %</label>
         <input type="number" id="rf" value="5" step="0.1"/>
       </div>
-
       <div class="field">
-        <label class="checkbox-label">
-          <input type="checkbox" id="extend5y"/>
+        <label style="display:flex;align-items:flex-start;gap:10px">
+          <input type="checkbox" id="extend5y" style="width:auto;margin-top:3px"/>
           <span>Продлить инвестирование ещё на 5 лет без пополнения счета и без комиссий</span>
         </label>
         <div class="hint">Опциональная возможность при подаче заявления на пролонгацию по окончанию договора не менее чем за два месяца в страховую компанию.</div>
       </div>
-
       <div class="small" id="datasetInfo"></div>
       <div class="small warn" id="warningBox"></div>
 
@@ -107,11 +100,10 @@ canvas{width:100%;height:100%;display:block}
         <div class="card-title">Правила комиссий</div>
         <div class="table-wrap">
           <table><tbody>
-            <tr><td>Базовый срок договора</td><td>15 лет</td></tr>
-            <tr><td>Пролонгация</td><td>Опционально ещё 5 лет без пополнений и без комиссий</td></tr>
+            <tr><td>Срок договора</td><td>15 лет + опционально ещё 5 лет без пополнений и без комиссий</td></tr>
             <tr><td>Комиссия 6.6%</td><td>6.6% от общего объема всех премий за 15 лет, списывается равными долями ежегодно в первые 3 года</td></tr>
-            <tr><td>Комиссия 5%</td><td>5% с каждой премии весь срок базового договора</td></tr>
-            <tr><td>Ежегодная комиссия</td><td>$30 в конце каждого года базового договора</td></tr>
+            <tr><td>Комиссия 5%</td><td>5% с каждой премии весь срок договора</td></tr>
+            <tr><td>Ежегодная комиссия</td><td>$30 в конце каждого года</td></tr>
             <tr><td>Актив</td><td>S&amp;P 500</td></tr>
           </tbody></table>
         </div>
@@ -120,10 +112,10 @@ canvas{width:100%;height:100%;display:block}
 
     <div>
       <div class="stats">
-        <div class="stat"><div class="stat-title">Итоговая стоимость</div><div class="stat-value" id="kpiFinal">—</div><div class="stat-hint">на конец периода</div></div>
+        <div class="stat"><div class="stat-title">Итоговая стоимость</div><div class="stat-value" id="kpiFinal">—</div><div class="stat-hint">на конец 15-го года</div></div>
         <div class="stat"><div class="stat-title">Чистая прибыль</div><div class="stat-value" id="kpiProfit">—</div><div class="stat-hint">после всех комиссий</div></div>
         <div class="stat"><div class="stat-title">IRR</div><div class="stat-value" id="kpiIrr">—</div><div class="stat-hint">эффективная доходность</div></div>
-        <div class="stat"><div class="stat-title">Потери на комиссиях</div><div class="stat-value" id="kpiFees">—</div><div class="stat-hint">всего за базовые 15 лет</div></div>
+        <div class="stat"><div class="stat-title">Потери на комиссиях</div><div class="stat-value" id="kpiFees">—</div><div class="stat-hint">всего за 15 лет</div></div>
       </div>
 
       <div class="card">
@@ -143,14 +135,12 @@ canvas{width:100%;height:100%;display:block}
             <tr><td>Итог Apollo</td><td id="rApollo">—</td></tr>
             <tr><td>Итог при прямом S&amp;P 500 без комиссий</td><td id="rDirect">—</td></tr>
             <tr><td>Недополученный результат из-за комиссий</td><td id="rLost">—</td></tr>
-            <tr><td>Итог Apollo после 15 лет</td><td id="rApollo15">—</td></tr>
-            <tr><td>Итог Apollo после пролонгации 20 лет</td><td id="rApollo20">—</td></tr>
           </tbody></table>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title">Метрики Apollo за выбранный период</div>
+        <div class="card-title">Метрики Apollo за выбранный 15-летний период</div>
         <div class="table-wrap">
           <table><tbody>
             <tr><td>CAGR Apollo</td><td id="mCagr">—</td></tr>
@@ -164,8 +154,8 @@ canvas{width:100%;height:100%;display:block}
       </div>
 
       <div class="bottom">
-        <div class="info"><div class="stat-title">Период</div><div class="stat-value" id="infoPeriod">—</div><div class="hint">15 лет или 20 лет с пролонгацией.</div></div>
-        <div class="info"><div class="stat-title">Количество взносов</div><div class="stat-value" id="infoContribs">—</div><div class="hint">Премии только за базовые 15 лет.</div></div>
+        <div class="info"><div class="stat-title">Период</div><div class="stat-value" id="infoPeriod">—</div><div class="hint">Ровно 15 лет по историческим данным.</div></div>
+        <div class="info"><div class="stat-title">Количество взносов</div><div class="stat-value" id="infoContribs">—</div><div class="hint">Всего ежегодных премий в договоре.</div></div>
         <div class="info"><div class="stat-title">Источник</div><div class="stat-value">S&amp;P 500</div><div class="hint">Файл: data/sp500.xlsx</div></div>
       </div>
     </div>
@@ -206,8 +196,6 @@ const els = {
   rApollo: document.getElementById("rApollo"),
   rDirect: document.getElementById("rDirect"),
   rLost: document.getElementById("rLost"),
-  rApollo15: document.getElementById("rApollo15"),
-  rApollo20: document.getElementById("rApollo20"),
   mCagr: document.getElementById("mCagr"),
   mVol: document.getElementById("mVol"),
   mMdd: document.getElementById("mMdd"),
@@ -353,11 +341,9 @@ function simulateApollo(startDate, annualPremium, extend5y) {
   annualFeeEvents.forEach(e => { if (!annualFeeMap.has(e.idx)) annualFeeMap.set(e.idx, []); annualFeeMap.get(e.idx).push(e); });
 
   let apollo = 0, direct = 0, fee66Total = 0, fee5Total = 0, fee30Total = 0;
-  let apolloAt15 = null;
   const pointsApollo = [], pointsDirect = [], perfPoints = [], cashflows = [];
   let perfIndex = null;
   let startedPerf = false;
-  const idx15End = nextIndexOnOrAfter(addYears(startDate, 15));
 
   for (let i = startIdx; i <= endIdx; i++) {
     const prevApollo = apollo;
@@ -405,8 +391,6 @@ function simulateApollo(startDate, annualPremium, extend5y) {
       perfIndex = perfIndex * (1 + r);
       perfPoints.push({ date: DATA[i][0], value: perfIndex });
     }
-
-    if (i === idx15End) apolloAt15 = apollo;
   }
 
   const finalDate = DATA[endIdx][0];
@@ -424,7 +408,6 @@ function simulateApollo(startDate, annualPremium, extend5y) {
     pointsDirect,
     perfPoints,
     apolloFinal: apollo,
-    apolloAt15,
     directFinal: direct,
     totalPremiums,
     totalFees,
@@ -438,6 +421,7 @@ function simulateApollo(startDate, annualPremium, extend5y) {
     extended: !!extend5y
   };
 }
+
 function drawChart(pointsA, pointsB) {
   const canvas = document.getElementById("chart");
   const dpr = window.devicePixelRatio || 1;
@@ -475,7 +459,6 @@ function drawChart(pointsA, pointsB) {
 
 function recalc() {
   if (!DATA.length) return;
-
   let premium = Number(els.annualPremium.value || 0);
   if (premium < 1500) premium = 1500;
   if (premium > 10000) premium = 10000;
@@ -485,7 +468,7 @@ function recalc() {
 
   const sim = simulateApollo(els.startDate.value, premium, els.extend5y.checked);
   if (!sim) {
-    els.warningBox.textContent = "Для выбранной даты не хватает полного периода в истории S&P 500.";
+    els.warningBox.textContent = "Для выбранной даты не хватает полного 15-летнего отрезка в истории.";
     return;
   }
 
@@ -512,8 +495,6 @@ function recalc() {
   els.rApollo.textContent = money(sim.apolloFinal);
   els.rDirect.textContent = money(sim.directFinal);
   els.rLost.textContent = money(lost);
-  els.rApollo15.textContent = sim.apolloAt15 == null ? "—" : money(sim.apolloAt15);
-  els.rApollo20.textContent = sim.extended ? money(sim.apolloFinal) : "—";
 
   els.mCagr.textContent = metrics ? pct(metrics.cagr) : "—";
   els.mVol.textContent = metrics ? pct(metrics.vol) : "—";
