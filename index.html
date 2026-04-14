@@ -43,11 +43,11 @@ canvas{width:100%;height:100%;display:block}
 <div class="wrap">
   <div class="hero">
     <div>
-      <div class="badge">Фонд Аполло — S&P 500 + регулярные комиссии</div>
+      <div class="badge">Фонд Аполло — S&P 500 + регулярные комиссии · калькулятор сделал Фокейчев Владимир</div>
       <h1>Калькулятор фонда Аполло</h1>
       <div class="subtitle">
         Калькулятор показывает, сколько инвестор мог заработать на 15-летнем отрезке при инвестировании в индекс S&amp;P 500 через фонд Аполло с учетом регулярных комиссий.
-        Используются исторические данные S&amp;P 500 из Excel. В расчет заложены: комиссия 6.6% от общего объема премий за 15 лет, взимаемая ежегодно в первые 3 года, 5% с каждой премии весь срок, и ежегодная комиссия $30 в конце каждого года.
+        Используются исторические данные S&amp;P 500 из Excel. Калькулятор сделал Фокейчев Владимир. В расчет заложены: комиссия 6.6% от общего объема премий за 15 лет, взимаемая ежегодно в первые 3 года, 5% с каждой премии весь срок, и ежегодная комиссия $30 в конце каждого года.
       </div>
     </div>
     <div class="box">
@@ -55,6 +55,12 @@ canvas{width:100%;height:100%;display:block}
       <div class="result-value" id="heroResult">—</div>
       <div class="hint" id="heroSub">—</div>
       <div class="status" id="loadStatus">Загрузка Excel…</div>
+      <div style="margin-top:16px;border-top:1px solid rgba(148,163,184,.14);padding-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><div class="result-label">CAGR</div><div style="font-size:20px;font-weight:700" id="heroCagr">—</div></div>
+        <div><div class="result-label">Volatility</div><div style="font-size:20px;font-weight:700" id="heroVol">—</div></div>
+        <div><div class="result-label">Max Drawdown</div><div style="font-size:20px;font-weight:700" id="heroMdd">—</div></div>
+        <div><div class="result-label">Sharpe</div><div style="font-size:20px;font-weight:700" id="heroSharpe">—</div></div>
+      </div>
     </div>
   </div>
 
@@ -121,13 +127,13 @@ canvas{width:100%;height:100%;display:block}
       </div>
 
       <div class="card">
-        <div class="card-title">Метрики результата Apollo за выбранный 15-летний период</div>
+        <div class="card-title">Метрики Apollo за выбранный 15-летний период</div>
         <div class="table-wrap">
           <table><tbody>
-            <tr><td>CAGR</td><td id="mCagr">—</td></tr>
-            <tr><td>Volatility</td><td id="mVol">—</td></tr>
-            <tr><td>Max drawdown</td><td id="mMdd">—</td></tr>
-            <tr><td>Sharpe</td><td id="mSharpe">—</td></tr>
+            <tr><td>CAGR Apollo</td><td id="mCagr">—</td></tr>
+            <tr><td>Volatility Apollo</td><td id="mVol">—</td></tr>
+            <tr><td>Max drawdown Apollo</td><td id="mMdd">—</td></tr>
+            <tr><td>Sharpe Apollo</td><td id="mSharpe">—</td></tr>
             <tr><td>Best year</td><td id="mBest">—</td></tr>
             <tr><td>Worst year</td><td id="mWorst">—</td></tr>
           </tbody></table>
@@ -178,7 +184,11 @@ const els = {
   mBest: document.getElementById("mBest"),
   mWorst: document.getElementById("mWorst"),
   infoPeriod: document.getElementById("infoPeriod"),
-  infoContribs: document.getElementById("infoContribs")
+  infoContribs: document.getElementById("infoContribs"),
+  heroCagr: document.getElementById("heroCagr"),
+  heroVol: document.getElementById("heroVol"),
+  heroMdd: document.getElementById("heroMdd"),
+  heroSharpe: document.getElementById("heroSharpe")
 };
 
 function excelDateToISO(excelDate){
@@ -382,6 +392,10 @@ function recalc(){
   els.mVol.textContent=pct(metrics.vol);
   els.mMdd.textContent=pct(metrics.mdd);
   els.mSharpe.textContent=metrics.sharpe.toFixed(2);
+  els.heroCagr.textContent=pct(metrics.cagr);
+  els.heroVol.textContent=pct(metrics.vol);
+  els.heroMdd.textContent=pct(metrics.mdd);
+  els.heroSharpe.textContent=metrics.sharpe.toFixed(2);
   els.mBest.textContent=metrics.best?`${metrics.best.year} (${pct(metrics.best.ret)})`:"—";
   els.mWorst.textContent=metrics.worst?`${metrics.worst.year} (${pct(metrics.worst.ret)})`:"—";
   els.infoPeriod.textContent=`${sim.startDate} → ${sim.endDate}`;
