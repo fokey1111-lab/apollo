@@ -5,30 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Калькулятор фонда Аполло</title>
 <style>
-:root{--panel:rgba(255,255,255,.06);--panel-border:rgba(255,255,255,.09);--text:#fff;--muted:#94a3b8}
+:root{--panel:rgba(255,255,255,.05);--panel-border:rgba(148,163,184,.16);--text:#fff;--muted:#94a3b8;--accent:#93c5fd;--accent2:#cbd5e1;--bg1:#020617;--bg2:#0b1220}
 *{box-sizing:border-box}
-body{margin:0;background:linear-gradient(180deg,#020617 0%,#0f172a 100%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body{margin:0;background:radial-gradient(circle at top, rgba(59,130,246,.10), transparent 28%), linear-gradient(180deg,var(--bg1) 0%, var(--bg2) 100%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
 .wrap{max-width:1380px;margin:0 auto;padding:24px}
-.badge{display:inline-block;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.08);color:#cbd5e1;font-size:14px;margin-bottom:16px}
+.badge{display:inline-block;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.06);color:#dbeafe;font-size:13px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:16px;border:1px solid rgba(147,197,253,.18)}
 .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:end;margin-bottom:24px}
-h1{margin:0;font-size:44px;line-height:1.05}
-.subtitle{margin-top:16px;color:var(--muted);font-size:18px;line-height:1.6;max-width:900px}
-.box,.card,.info{background:var(--panel);border:1px solid var(--panel-border);border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+h1{margin:0;font-size:46px;line-height:1.02;letter-spacing:-0.03em}
+.subtitle{margin-top:16px;color:#cbd5e1;font-size:18px;line-height:1.65;max-width:900px}
+.box,.card,.info{background:linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.035));border:1px solid var(--panel-border);border-radius:24px;box-shadow:0 14px 40px rgba(0,0,0,.28)}
 .box,.card{padding:24px}
 .result-label{color:var(--muted);font-size:14px;margin-bottom:8px}
-.result-value{font-size:32px;font-weight:700;line-height:1.2}
+.result-value{font-size:34px;font-weight:800;line-height:1.15;letter-spacing:-0.02em}
 .grid{display:grid;grid-template-columns:390px 1fr;gap:24px}
-.panel-title,.card-title{font-size:22px;font-weight:700;margin-bottom:18px}
+.panel-title,.card-title{font-size:22px;font-weight:800;margin-bottom:18px;letter-spacing:-0.02em}
 .field{margin-bottom:18px}
 label{display:block;font-size:14px;color:#e2e8f0;margin-bottom:8px}
-input{width:100%;padding:14px;border-radius:12px;border:1px solid #334155;background:#020617;color:#fff;font-size:16px;outline:none}
+input{width:100%;padding:14px;border-radius:14px;border:1px solid #334155;background:#020617;color:#fff;font-size:16px;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
 .checkbox-label{display:flex;align-items:flex-start;gap:10px}
 .checkbox-label input{width:auto;margin-top:3px}
 .hint{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.5}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}
 .stat,.info{padding:20px}
 .stat-title{color:var(--muted);font-size:14px;margin-bottom:8px}
-.stat-value{font-size:28px;font-weight:700;line-height:1.2}
+.stat-value{font-size:30px;font-weight:800;line-height:1.15;letter-spacing:-0.02em}
 .stat-hint{margin-top:8px;color:#64748b;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
 .table-wrap{overflow:auto}
 table{width:100%;border-collapse:collapse}
@@ -37,7 +37,7 @@ th:first-child,td:first-child{text-align:left}
 th{color:#cbd5e1;font-weight:600;font-size:13px}
 td{color:#e2e8f0;font-size:14px}
 .bottom{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.canvas-wrap{width:100%;height:360px;border-radius:16px;overflow:hidden;background:rgba(2,6,23,.35)}
+.canvas-wrap{width:100%;height:380px;border-radius:18px;overflow:hidden;background:linear-gradient(180deg, rgba(2,6,23,.55), rgba(2,6,23,.35))}
 canvas{width:100%;height:100%;display:block}
 .small{color:var(--muted);font-size:13px}
 .warn{color:#fbbf24}
@@ -55,7 +55,7 @@ canvas{width:100%;height:100%;display:block}
       <h1>Калькулятор фонда Аполло</h1>
       <div class="subtitle">
         Калькулятор показывает результат фонда Аполло по базовому 15-летнему договору и, при необходимости, отдельный вариант с дополнительной пролонгацией ещё на 5 лет без новых пополнений и без комиссий.
-        Данные загружаются из Excel, поэтому для обновления достаточно заменить файл <b>data/sp500.xlsx</b>.
+        Данные загружаются из Excel, поэтому для обновления достаточно заменить файл <b>data/sp500.xlsx</b>. Первая премия поступает сразу в дату старта и немедленно инвестируется по уровню индекса на эту дату.
       </div>
     </div>
     <div class="box">
@@ -108,12 +108,12 @@ canvas{width:100%;height:100%;display:block}
       </div>
 
       <div class="card">
-        <div class="card-title">График стоимости фонда Аполло</div>
+        <div class="card-title">График стоимости фонда Аполло</div><div class="hint" style="margin-top:-8px;margin-bottom:14px">Динамика расчётной стоимости с учетом комиссий и выбранного сценария.</div>
         <div class="canvas-wrap"><canvas id="chart"></canvas></div>
       </div>
 
       <div class="card">
-        <div class="card-title">Результаты по вариантам</div>
+        <div class="card-title">Результаты по вариантам</div><div class="hint" style="margin-top:-8px;margin-bottom:14px">Базовый договор и дополнительный сценарий пролонгации представлены отдельно.</div>
         <div class="table-wrap">
           <table><tbody>
             <tr><td>Общая сумма премий</td><td id="rPremiums">—</td></tr>
@@ -128,7 +128,7 @@ canvas{width:100%;height:100%;display:block}
       </div>
 
       <div class="card">
-        <div class="card-title">Метрики фонда Аполло по выбранному варианту</div>
+        <div class="card-title">Метрики фонда Аполло по выбранному варианту</div><div class="hint" style="margin-top:-8px;margin-bottom:14px">Показатели рассчитываются для активного сценария, выбранного в шапке.</div>
         <div class="table-wrap">
           <table><tbody>
             <tr><td>CAGR</td><td id="mCagr">—</td></tr>
@@ -307,11 +307,9 @@ function simulateVariant(startDate, annualPremium, totalYears) {
 
   for (let i = startIdx; i <= endIdx; i++) {
     const prevApollo = apollo;
-    if (i > startIdx) {
-      const ratio = DATA[i][1] / DATA[i-1][1];
-      apollo *= ratio;
-    }
 
+    // 1) Premiums are invested immediately on the date they arrive.
+    // This means the very first premium is added on the start date before any future index movement.
     let externalFlow = 0;
     if (premiumMap.has(i)) {
       for (const e of premiumMap.get(i)) {
@@ -326,6 +324,13 @@ function simulateVariant(startDate, annualPremium, totalYears) {
       }
     }
 
+    // 2) After the initial date, the account moves with the index from the previous point to the current point.
+    if (i > startIdx) {
+      const ratio = DATA[i][1] / DATA[i-1][1];
+      apollo *= ratio;
+    }
+
+    // 3) Year-end flat fee remains at year end.
     if (annualFeeMap.has(i)) {
       for (const e of annualFeeMap.get(i)) {
         apollo -= 30;
@@ -367,6 +372,7 @@ function simulateVariant(startDate, annualPremium, totalYears) {
     contributionsCount: premiumEvents.length
   };
 }
+
 function drawChart(pointsA) {
   const canvas = document.getElementById("chart");
   const dpr = window.devicePixelRatio || 1;
@@ -395,8 +401,8 @@ function drawChart(pointsA) {
   }
   ctx.beginPath();
   pointsA.forEach((pt,i)=>{ const xx=x(i), yy=y(pt.value); if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy); });
-  ctx.strokeStyle = "#60a5fa";
-  ctx.lineWidth = 3;
+  ctx.strokeStyle = "#93c5fd";
+  ctx.lineWidth = 3.5;
   ctx.stroke();
 
   const step = Math.max(1, Math.ceil((pointsA.length-1)/6));

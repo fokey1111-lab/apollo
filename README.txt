@@ -1,1 +1,1 @@
-Apollo Excel autoload clean project. Removed Worst year, Max Drawdown, Sharpe and removed the built-in source wording. To update data, replace data/sp500.xlsx and redeploy.
+Apollo Excel autoload bank-style project. First premium is invested immediately on the start date at the index level of that date. To update data, replace data/sp500.xlsx and redeploy.
