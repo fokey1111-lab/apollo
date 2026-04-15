@@ -1,1 +1,1 @@
-Apollo project final date fix. Removed automatic date overwriting during recalculation. The start date field now changes manually within the full available history range. Partial-period badge remains enabled. Update data by replacing data/sp500.xlsx.
+Apollo project. Added separate optional +5-year scenario. CAGR is calculated correctly for each actual term: 15 years separately and 20 years separately. Update data by replacing data/sp500.xlsx.
