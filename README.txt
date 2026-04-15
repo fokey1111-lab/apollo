@@ -1,1 +1,1 @@
-Apollo Excel autoload bank-style project. Same calculation logic as the clean version, but with a more premium client-facing interface. Update data by replacing data/sp500.xlsx and redeploy.
+Apollo Excel autoload clean project. Removed Worst year, Max Drawdown, Sharpe and removed the built-in source wording. To update data, replace data/sp500.xlsx and redeploy.
