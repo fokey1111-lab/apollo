@@ -1,1 +1,1 @@
-Apollo project with Excel autoload. Added optional 5-year extension without new contributions and without fees. To update data, replace data/sp500.xlsx and redeploy.
+Apollo project. If available history is shorter than 15 or 20 years, the calculator now shows the current result to the latest available date with commissions applied correctly. CAGR is calculated using the actual elapsed period. Update data by replacing data/sp500.xlsx.
