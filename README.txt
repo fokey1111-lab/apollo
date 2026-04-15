@@ -1,1 +1,1 @@
-Apollo Excel autoload bank-style project. First premium is invested immediately on the start date at the index level of that date. To update data, replace data/sp500.xlsx and redeploy.
+Apollo project. Fixed logic and calculations: the first premium is invested immediately on the start date, date arithmetic is timezone-safe, partial period is supported, and data is updated via data/sp500.xlsx.
