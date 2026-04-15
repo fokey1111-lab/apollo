@@ -1,1 +1,1 @@
-Apollo project. If available history is shorter than 15 or 20 years, the calculator now shows the current result to the latest available date with commissions applied correctly. CAGR is calculated using the actual elapsed period. Update data by replacing data/sp500.xlsx.
+Apollo project v2. Fixed date field behavior so the selected date can be changed normally within dataset bounds. Added explicit badge: НЕПОЛНЫЙ ПЕРИОД / ТЕКУЩИЙ РЕЗУЛЬТАТ when history is shorter than the requested term. Update data by replacing data/sp500.xlsx.

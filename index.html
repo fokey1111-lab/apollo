@@ -64,6 +64,7 @@ canvas{width:100%;height:100%;display:block}
       <div class="result-value" id="heroResult">—</div>
       <div class="hint" id="heroSub">—</div>
       <div class="small" id="loadStatus">Загрузка Excel…</div>
+      <div class="small warn" id="partialBadge" style="margin-top:8px;font-weight:700"></div>
       <div class="metrics-mini">
         <div><div class="result-label">CAGR</div><div class="v" id="heroCagr">—</div></div>
         <div><div class="result-label">Volatility</div><div class="v" id="heroVol">—</div></div>
@@ -82,7 +83,7 @@ canvas{width:100%;height:100%;display:block}
         <div class="hint" id="premiumHint">Минимум $1,500 и максимум $10,000</div>
       </div>
       <div class="field">
-        <label>Дата старта базового 15-летнего периода</label>
+        <label>Дата старта</label>
         <input type="date" id="startDate"/>
       </div>
       <div class="field">
@@ -176,6 +177,7 @@ const els = {
   heroMdd: document.getElementById("heroMdd"),
   heroSharpe: document.getElementById("heroSharpe"),
   loadStatus: document.getElementById("loadStatus"),
+  partialBadge: document.getElementById("partialBadge"),
   kpiFinal15: document.getElementById("kpiFinal15"),
   kpiProfit15: document.getElementById("kpiProfit15"),
   kpiIrr15: document.getElementById("kpiIrr15"),
@@ -238,10 +240,21 @@ function latestAllowedStartDate(totalYears) {
 function syncStartDateBounds() {
   const minDate = DATA[0][0];
   const maxStart = DATA[DATA.length - 1][0];
+  const current = els.startDate.value;
   els.startDate.min = minDate;
   els.startDate.max = maxStart;
-  if (!els.startDate.value || els.startDate.value < minDate) els.startDate.value = minDate;
-  if (els.startDate.value > maxStart) els.startDate.value = maxStart;
+  if (!current) {
+    els.startDate.value = minDate;
+    return;
+  }
+  if (current < minDate) {
+    els.startDate.value = minDate;
+    return;
+  }
+  if (current > maxStart) {
+    els.startDate.value = maxStart;
+    return;
+  }
 }
 function yearsBetween(start, end) {
   return (new Date(end) - new Date(start)) / (365.25 * 24 * 3600 * 1000);
@@ -462,6 +475,7 @@ function recalc() {
   els.annualPremium.value = premium;
   els.premiumHint.textContent = "Допустимо от $1,500 до $10,000 · сейчас: " + money(premium);
   els.warningBox.textContent = "";
+  els.partialBadge.textContent = "";
 
   const base15 = simulateVariant(els.startDate.value, premium, 15);
   if (!base15) {
