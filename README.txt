@@ -1,1 +1,1 @@
-Apollo fund-only embedded project. Updated commission timing: 6.6% of total 15-year premiums is now charged at the time each premium is paid during the first 3 years, not at year end. No browser Excel loading is required. Excel file remains in the archive as source/reference.
+Apollo Excel autoload clean project. Removed Worst year, Max Drawdown, Sharpe and removed the built-in source wording. To update data, replace data/sp500.xlsx and redeploy.
