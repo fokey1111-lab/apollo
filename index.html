@@ -84,6 +84,7 @@ canvas{width:100%;height:100%;display:block}
       </div>
       <div class="field">
         <label>Дата старта</label>
+        <div class="hint">Дату можно выбрать вручную в пределах всей доступной истории.</div>
         <input type="date" id="startDate"/>
       </div>
       <div class="field">
@@ -240,21 +241,8 @@ function latestAllowedStartDate(totalYears) {
 function syncStartDateBounds() {
   const minDate = DATA[0][0];
   const maxStart = DATA[DATA.length - 1][0];
-  const current = els.startDate.value;
   els.startDate.min = minDate;
   els.startDate.max = maxStart;
-  if (!current) {
-    els.startDate.value = minDate;
-    return;
-  }
-  if (current < minDate) {
-    els.startDate.value = minDate;
-    return;
-  }
-  if (current > maxStart) {
-    els.startDate.value = maxStart;
-    return;
-  }
 }
 function yearsBetween(start, end) {
   return (new Date(end) - new Date(start)) / (365.25 * 24 * 3600 * 1000);
@@ -466,8 +454,6 @@ function drawChart(pointsA, pointsB) {
 
 function recalc() {
   if (!DATA.length) return;
-  syncStartDateBounds();
-  syncStartDateBounds();
 
   let premium = Number(els.annualPremium.value || 0);
   if (premium < 1500) premium = 1500;
@@ -538,7 +524,7 @@ async function init() {
     els.datasetInfo.textContent = "История S&P 500: " + minDate + " → " + maxDate + " · " + DATA.length.toLocaleString("en-US") + " точек.";
     els.startDate.min = minDate;
     els.startDate.max = maxDate;
-    els.startDate.value = minDate;
+    if (!els.startDate.value) els.startDate.value = minDate;
 
     ["annualPremium","startDate","rf","showPlus5"].forEach(id => {
       document.getElementById(id).addEventListener("input", recalc);

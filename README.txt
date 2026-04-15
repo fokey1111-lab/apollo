@@ -1,1 +1,1 @@
-Apollo project v2. Fixed date field behavior so the selected date can be changed normally within dataset bounds. Added explicit badge: НЕПОЛНЫЙ ПЕРИОД / ТЕКУЩИЙ РЕЗУЛЬТАТ when history is shorter than the requested term. Update data by replacing data/sp500.xlsx.
+Apollo project final date fix. Removed automatic date overwriting during recalculation. The start date field now changes manually within the full available history range. Partial-period badge remains enabled. Update data by replacing data/sp500.xlsx.
