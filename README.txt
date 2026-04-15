@@ -1,1 +1,1 @@
-Apollo fund-only project. No comparison with direct S&P 500. The site shows only the Apollo fund chart and Apollo fund metrics. Date selection works manually. Partial-period result is supported. Update data by replacing data/sp500.xlsx.
+Apollo fund-only embedded project. Updated commission timing: 6.6% of total 15-year premiums is now charged at the time each premium is paid during the first 3 years, not at year end. No browser Excel loading is required. Excel file remains in the archive as source/reference.
