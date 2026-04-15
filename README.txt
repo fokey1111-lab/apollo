@@ -1,1 +1,1 @@
-Apollo project. Added separate optional +5-year scenario. CAGR is calculated correctly for each actual term: 15 years separately and 20 years separately. Update data by replacing data/sp500.xlsx.
+Apollo project. Fixed date logic so the selected date changes normally and is not overwritten during recalculation. If history is shorter than 15 or 20 years, the calculator shows the current result to the latest available date with commissions applied correctly. Partial-period badge is shown explicitly. Update data by replacing data/sp500.xlsx.

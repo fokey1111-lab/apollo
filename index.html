@@ -64,6 +64,7 @@ canvas{width:100%;height:100%;display:block}
       <div class="result-value" id="heroResult">—</div>
       <div class="hint" id="heroSub">—</div>
       <div class="small" id="loadStatus">Загрузка Excel…</div>
+      <div class="small warn" id="partialBadge" style="margin-top:8px;font-weight:700"></div>
       <div class="metrics-mini">
         <div><div class="result-label">CAGR</div><div class="v" id="heroCagr">—</div></div>
         <div><div class="result-label">Volatility</div><div class="v" id="heroVol">—</div></div>
@@ -82,7 +83,8 @@ canvas{width:100%;height:100%;display:block}
         <div class="hint" id="premiumHint">Минимум $1,500 и максимум $10,000</div>
       </div>
       <div class="field">
-        <label>Дата старта базового 15-летнего периода</label>
+        <label>Дата старта</label>
+        <div class="hint">Дату можно менять вручную в пределах всей доступной истории.</div>
         <input type="date" id="startDate"/>
       </div>
       <div class="field">
@@ -176,6 +178,7 @@ const els = {
   heroMdd: document.getElementById("heroMdd"),
   heroSharpe: document.getElementById("heroSharpe"),
   loadStatus: document.getElementById("loadStatus"),
+  partialBadge: document.getElementById("partialBadge"),
   kpiFinal15: document.getElementById("kpiFinal15"),
   kpiProfit15: document.getElementById("kpiProfit15"),
   kpiIrr15: document.getElementById("kpiIrr15"),
@@ -227,6 +230,12 @@ function addYears(dateStr, years) {
   const d = new Date(dateStr + "T00:00:00");
   d.setFullYear(d.getFullYear() + years);
   return d.toISOString().slice(0,10);
+}
+function syncStartDateBounds() {
+  const minDate = DATA[0][0];
+  const maxDate = DATA[DATA.length - 1][0];
+  els.startDate.min = minDate;
+  els.startDate.max = maxDate;
 }
 function yearsBetween(start, end) {
   return (new Date(end) - new Date(start)) / (365.25 * 24 * 3600 * 1000);
@@ -299,8 +308,13 @@ function simulateVariant(startDate, annualPremium, totalYears) {
   const baseYears = 15;
   const startIdx = nextIndexOnOrAfter(startDate);
   if (startIdx < 0) return null;
-  const endIdx = nextIndexOnOrAfter(addYears(startDate, totalYears));
-  if (endIdx < 0) return null;
+
+  const targetEndDate = addYears(startDate, totalYears);
+  let endIdx = nextIndexOnOrAfter(targetEndDate);
+  if (endIdx < 0) endIdx = DATA.length - 1;
+
+  const actualEndDate = DATA[endIdx][0];
+  const actualYears = Math.max(yearsBetween(DATA[startIdx][0], actualEndDate), 0);
 
   const totalContractPremiums = annualPremium * baseYears;
   const fee66AnnualFirst3 = (totalContractPremiums * 0.066) / 3;
@@ -377,6 +391,8 @@ function simulateVariant(startDate, annualPremium, totalYears) {
   return {
     startDate: DATA[startIdx][0],
     endDate: finalDate,
+    requestedYears: totalYears,
+    actualYears,
     totalYears,
     pointsApollo,
     pointsDirect,
@@ -438,6 +454,7 @@ function recalc() {
   els.annualPremium.value = premium;
   els.premiumHint.textContent = "Допустимо от $1,500 до $10,000 · сейчас: " + money(premium);
   els.warningBox.textContent = "";
+  if (els.partialBadge) els.partialBadge.textContent = "";
 
   const base15 = simulateVariant(els.startDate.value, premium, 15);
   if (!base15) {
@@ -448,14 +465,17 @@ function recalc() {
   let plus20 = null;
   if (els.showPlus5.checked) {
     plus20 = simulateVariant(els.startDate.value, premium, 20);
-    if (!plus20) els.warningBox.textContent = "Для отдельного варианта +5 лет не хватает полного 20-летнего периода в истории S&P 500.";
   }
 
   const shown = (els.showPlus5.checked && plus20) ? plus20 : base15;
+  if (shown.actualYears < shown.totalYears - 0.01) {
+    els.warningBox.textContent = "История короче выбранного срока. Показан текущий результат на последнюю доступную дату с учетом комиссий.";
+    if (els.partialBadge) els.partialBadge.textContent = "НЕПОЛНЫЙ ПЕРИОД / ТЕКУЩИЙ РЕЗУЛЬТАТ";
+  }
   const metrics = calcMetricsFromPerformanceIndex(shown.perfPoints, Number(els.rf.value || 0));
 
   els.heroResult.textContent = money(shown.apolloFinal);
-  els.heroSub.textContent = shown.startDate + " → " + shown.endDate + " · вариант " + shown.totalYears + " лет";
+  els.heroSub.textContent = shown.startDate + " → " + shown.endDate + " · вариант " + shown.totalYears + " лет · фактически " + shown.actualYears.toFixed(1) + " года";
   els.heroCagr.textContent = metrics ? pct(metrics.cagr) : "—";
   els.heroVol.textContent = metrics ? pct(metrics.vol) : "—";
   els.heroMdd.textContent = metrics ? pct(metrics.mdd) : "—";
@@ -484,7 +504,7 @@ function recalc() {
   els.mBest.textContent = metrics && metrics.best ? (metrics.best.year + " (" + pct(metrics.best.ret) + ")") : "—";
   els.mWorst.textContent = metrics && metrics.worst ? (metrics.worst.year + " (" + pct(metrics.worst.ret) + ")") : "—";
 
-  els.infoPeriod.textContent = shown.startDate + " → " + shown.endDate + " (" + shown.totalYears + " лет)";
+  els.infoPeriod.textContent = shown.startDate + " → " + shown.endDate + " (запрошено " + shown.totalYears + " лет, фактически " + shown.actualYears.toFixed(1) + ")";
   els.infoContribs.textContent = base15.contributionsCount.toLocaleString("en-US");
 
   drawChart(shown.pointsApollo, shown.pointsDirect);
@@ -498,7 +518,8 @@ async function init() {
     els.datasetInfo.textContent = "История S&P 500: " + minDate + " → " + maxDate + " · " + DATA.length.toLocaleString("en-US") + " точек.";
     els.startDate.min = minDate;
     els.startDate.max = maxDate;
-    els.startDate.value = minDate;
+    syncStartDateBounds();
+    if (!els.startDate.value) els.startDate.value = minDate;
 
     ["annualPremium","startDate","rf","showPlus5"].forEach(id => {
       document.getElementById(id).addEventListener("input", recalc);
