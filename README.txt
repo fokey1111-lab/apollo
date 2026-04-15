@@ -1,1 +1,1 @@
-Apollo fund-only project. Removed comparison with direct S&P 500. The site now shows only the Apollo fund chart and Apollo fund metrics. Update data by replacing data/sp500.xlsx.
+Apollo fund-only project. No comparison with direct S&P 500. The site shows only the Apollo fund chart and Apollo fund metrics. Date selection works manually. Partial-period result is supported. Update data by replacing data/sp500.xlsx.
